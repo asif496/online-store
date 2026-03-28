@@ -1,24 +1,20 @@
 // backend/src/routes/reports.js
 'use strict';
-const express  = require('express');
-const router   = express.Router();
-const db       = require('../db');
-const { renderPdf, loadTemplate } = require('../pdf/renderPdf');
+const express = require('express');
+const router  = express.Router();
+const db      = require('../db');
+const PDFDocument = require('pdfkit');
 
 function fmt(n) {
   return Number(n).toLocaleString('en-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-function badgeClass(cat) {
-  const map = {
-    apparel: 'apparel', grocery: 'grocery', handicrafts: 'handicrafts',
-    seafood: 'seafood', sweets: 'sweets', spices: 'spices',
-    snacks: 'snacks', home: 'home',
-  };
-  return 'badge-' + (map[cat?.toLowerCase()] || 'default');
-}
-function stars(avg) {
-  const full = Math.round(avg);
-  return '★'.repeat(full) + '☆'.repeat(5 - full);
+
+function makeDoc(res, filename) {
+  const doc = new PDFDocument({ margin: 40, size: 'A4' });
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  doc.pipe(res);
+  return doc;
 }
 
 // GET /api/reports/products.pdf
@@ -30,39 +26,40 @@ router.get('/products.pdf', async (req, res) => {
       GROUP BY p.id ORDER BY p.category, p.name
     `);
 
-    const totalProducts = products.length;
-    const avgPrice      = (products.reduce((s, p) => s + Number(p.price), 0) / totalProducts).toFixed(2);
-    const totalReviews  = products.reduce((s, p) => s + Number(p.reviewCount), 0);
-    const bestRated     = [...products].sort((a, b) => Number(b.avgRating) - Number(a.avgRating))[0]?.name || 'N/A';
-    const date          = new Date().toLocaleString('en-BD', { dateStyle: 'long', timeStyle: 'short' });
+    const doc = makeDoc(res, 'product-report.pdf');
 
-    const rows = products.map((p, i) => `
-      <tr>
-        <td>${i + 1}</td>
-        <td><strong>${p.name}</strong></td>
-        <td><span class="badge ${badgeClass(p.category)}">${p.category}</span></td>
-        <td style="text-align:right">৳ ${fmt(p.price)}</td>
-        <td style="text-align:right">${(Number(p.taxRate) * 100).toFixed(0)}%</td>
-        <td style="text-align:right"><span class="star">${stars(Number(p.avgRating))}</span> ${Number(p.avgRating).toFixed(1)}</td>
-        <td style="text-align:right">${p.reviewCount}</td>
-        <td style="text-align:right">${p.stockQty}</td>
-      </tr>
-    `).join('');
+    doc.fontSize(20).font('Helvetica-Bold').text('Product Report', { align: 'center' });
+    doc.fontSize(10).font('Helvetica').text(`Generated: ${new Date().toLocaleString()}`, { align: 'center' });
+    doc.moveDown();
 
-    let html = loadTemplate('productReport.html')
-      .replace('{{totalProducts}}', totalProducts)
-      .replace('{{avgPrice}}',      fmt(avgPrice))
-      .replace('{{bestRated}}',     bestRated)
-      .replace('{{totalReviews}}',  totalReviews)
-      .replace('{{date}}',          date)
-      .replace('{{rows}}',          rows);
+    doc.fontSize(11).font('Helvetica-Bold');
+    doc.text(`Total Products: ${products.length}   |   Total Reviews: ${products.reduce((s,p) => s + Number(p.reviewCount), 0)}`, { align: 'center' });
+    doc.moveDown();
 
-    const pdf = await renderPdf(html);
-    res.set({
-      'Content-Type':        'application/pdf',
-      'Content-Disposition': 'attachment; filename="product-report.pdf"',
+    const colX = [40, 200, 290, 360, 420, 480];
+    const headers = ['Name', 'Category', 'Price', 'Tax', 'Rating', 'Stock'];
+
+    doc.fontSize(10).font('Helvetica-Bold');
+    headers.forEach((h, i) => doc.text(h, colX[i], doc.y, { width: 100, continued: i < headers.length - 1 }));
+    doc.moveDown(0.5);
+    doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+    doc.moveDown(0.3);
+
+    doc.font('Helvetica').fontSize(9);
+    products.forEach(p => {
+      const y = doc.y;
+      if (y > 750) { doc.addPage(); }
+      doc.text(p.name.slice(0, 22), colX[0], doc.y, { width: 155 });
+      const rowY = doc.y - 11;
+      doc.text(p.category,                         colX[1], rowY, { width: 85 });
+      doc.text('৳ ' + fmt(p.price),               colX[2], rowY, { width: 65 });
+      doc.text((Number(p.taxRate)*100).toFixed(0)+'%', colX[3], rowY, { width: 55 });
+      doc.text(Number(p.avgRating).toFixed(1),     colX[4], rowY, { width: 55 });
+      doc.text(String(p.stockQty),                 colX[5], rowY, { width: 55 });
+      doc.moveDown(0.3);
     });
-    res.send(pdf);
+
+    doc.end();
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });
@@ -73,46 +70,42 @@ router.get('/products.pdf', async (req, res) => {
 router.get('/stock.pdf', async (req, res) => {
   try {
     const [products] = await db.query('SELECT * FROM products ORDER BY stockQty ASC');
-    const totalProducts = products.length;
-    const totalUnits    = products.reduce((s, p) => s + p.stockQty, 0);
-    const lowStockCount = products.filter(p => p.stockQty <= 5 && p.stockQty > 0).length;
-    const outOfStock    = products.filter(p => p.stockQty === 0).length;
-    const date          = new Date().toLocaleString('en-BD', { dateStyle: 'long', timeStyle: 'short' });
+    const doc = makeDoc(res, 'stock-report.pdf');
 
-    const rows = products.map((p, i) => {
-      const isLow = p.stockQty <= 5;
-      const isOut = p.stockQty === 0;
-      const qtyClass = isOut ? 'qty-critical' : isLow ? 'qty-warn' : 'qty-ok';
-      const badge    = isOut
-        ? '<span class="badge-low">OUT</span>'
-        : isLow
-          ? '<span class="badge-low">LOW</span>'
-          : '<span class="badge-ok">OK</span>';
-      return `
-        <tr class="${isLow ? 'low-stock' : ''}">
-          <td>${i + 1}</td>
-          <td><strong>${p.name}</strong></td>
-          <td>${p.category}</td>
-          <td style="text-align:right" class="${qtyClass}">${p.stockQty}</td>
-          <td style="text-align:center">${badge}</td>
-        </tr>
-      `;
-    }).join('');
+    doc.fontSize(20).font('Helvetica-Bold').text('Stock Report', { align: 'center' });
+    doc.fontSize(10).font('Helvetica').text(`Generated: ${new Date().toLocaleString()}`, { align: 'center' });
+    doc.moveDown();
 
-    let html = loadTemplate('stockReport.html')
-      .replace('{{totalProducts}}', totalProducts)
-      .replace('{{totalUnits}}',    totalUnits)
-      .replace('{{lowStockCount}}', lowStockCount)
-      .replace('{{outOfStock}}',    outOfStock)
-      .replace('{{date}}',          date)
-      .replace('{{rows}}',          rows);
+    const totalUnits = products.reduce((s,p) => s + p.stockQty, 0);
+    const lowStock   = products.filter(p => p.stockQty <= 5 && p.stockQty > 0).length;
+    const outOfStock = products.filter(p => p.stockQty === 0).length;
 
-    const pdf = await renderPdf(html);
-    res.set({
-      'Content-Type':        'application/pdf',
-      'Content-Disposition': 'attachment; filename="stock-report.pdf"',
+    doc.fontSize(11).font('Helvetica-Bold');
+    doc.text(`Total Products: ${products.length}   |   Total Units: ${totalUnits}   |   Low Stock: ${lowStock}   |   Out of Stock: ${outOfStock}`, { align: 'center' });
+    doc.moveDown();
+
+    const colX = [40, 220, 340, 440];
+    const headers = ['Name', 'Category', 'Stock Qty', 'Status'];
+
+    doc.fontSize(10).font('Helvetica-Bold');
+    headers.forEach((h, i) => doc.text(h, colX[i], doc.y, { width: 150, continued: i < headers.length - 1 }));
+    doc.moveDown(0.5);
+    doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+    doc.moveDown(0.3);
+
+    doc.font('Helvetica').fontSize(9);
+    products.forEach(p => {
+      if (doc.y > 750) { doc.addPage(); }
+      const status = p.stockQty === 0 ? 'OUT OF STOCK' : p.stockQty <= 5 ? 'LOW' : 'OK';
+      doc.text(p.name.slice(0, 26), colX[0], doc.y, { width: 175 });
+      const rowY = doc.y - 11;
+      doc.text(p.category,        colX[1], rowY, { width: 115 });
+      doc.text(String(p.stockQty),colX[2], rowY, { width: 95 });
+      doc.text(status,            colX[3], rowY, { width: 95 });
+      doc.moveDown(0.3);
     });
-    res.send(pdf);
+
+    doc.end();
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });
@@ -131,37 +124,46 @@ router.get('/invoice/:orderId', async (req, res) => {
       WHERE oi.orderId = ?
     `, [req.params.orderId]);
 
-    const date    = new Date(order.createdAt).toLocaleString('en-BD', { dateStyle: 'long', timeStyle: 'short' });
-    const noteRow = order.note ? `<p style="font-size:11px;color:#6b7280;margin-top:3px">Note: ${order.note}</p>` : '';
+    const doc = makeDoc(res, `invoice-${order.id}.pdf`);
 
-    const rows = items.map((item, i) => `
-      <tr>
-        <td>${i + 1}</td>
-        <td><strong>${item.productName}</strong></td>
-        <td>${item.category}</td>
-        <td class="num">৳ ${fmt(item.unitPrice)}</td>
-        <td class="num">${item.qty}</td>
-        <td class="num">${(Number(item.unitTaxRate) * 100).toFixed(0)}%  (৳${fmt(item.lineTax)})</td>
-        <td class="num"><strong>৳ ${fmt(item.lineTotal)}</strong></td>
-      </tr>
-    `).join('');
+    doc.fontSize(20).font('Helvetica-Bold').text('Invoice', { align: 'center' });
+    doc.fontSize(10).font('Helvetica').text(`Order #${order.id}   |   ${new Date(order.createdAt).toLocaleString()}`, { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(12).font('Helvetica-Bold').text(`Customer: ${order.customerName}`);
+    if (order.note) doc.fontSize(10).font('Helvetica').text(`Note: ${order.note}`);
+    doc.moveDown();
 
-    let html = loadTemplate('invoice.html')
-      .replace(/\{\{orderId\}\}/g,       order.id)
-      .replace(/\{\{customerName\}\}/g,  order.customerName)
-      .replace(/\{\{date\}\}/g,          date)
-      .replace('{{noteRow}}',            noteRow)
-      .replace('{{rows}}',               rows)
-      .replace('{{subtotal}}',           fmt(order.subtotal))
-      .replace('{{taxTotal}}',           fmt(order.taxTotal))
-      .replace('{{grandTotal}}',         fmt(order.grandTotal));
+    const colX = [40, 200, 290, 350, 420, 490];
+    const headers = ['Product', 'Category', 'Price', 'Qty', 'Tax', 'Total'];
 
-    const pdf = await renderPdf(html);
-    res.set({
-      'Content-Type':        'application/pdf',
-      'Content-Disposition': `attachment; filename="invoice-${order.id}.pdf"`,
+    doc.fontSize(10).font('Helvetica-Bold');
+    headers.forEach((h, i) => doc.text(h, colX[i], doc.y, { width: 100, continued: i < headers.length - 1 }));
+    doc.moveDown(0.5);
+    doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+    doc.moveDown(0.3);
+
+    doc.font('Helvetica').fontSize(9);
+    items.forEach(item => {
+      if (doc.y > 750) { doc.addPage(); }
+      doc.text(item.productName.slice(0, 22), colX[0], doc.y, { width: 155 });
+      const rowY = doc.y - 11;
+      doc.text(item.category,              colX[1], rowY, { width: 85 });
+      doc.text('৳'+fmt(item.unitPrice),    colX[2], rowY, { width: 55 });
+      doc.text(String(item.qty),           colX[3], rowY, { width: 65 });
+      doc.text('৳'+fmt(item.lineTax),      colX[4], rowY, { width: 65 });
+      doc.text('৳'+fmt(item.lineTotal),    colX[5], rowY, { width: 65 });
+      doc.moveDown(0.3);
     });
-    res.send(pdf);
+
+    doc.moveDown();
+    doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+    doc.moveDown(0.5);
+    doc.fontSize(11).font('Helvetica-Bold');
+    doc.text(`Subtotal: ৳${fmt(order.subtotal)}`, { align: 'right' });
+    doc.text(`Tax: ৳${fmt(order.taxTotal)}`,       { align: 'right' });
+    doc.text(`Grand Total: ৳${fmt(order.grandTotal)}`, { align: 'right' });
+
+    doc.end();
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });
