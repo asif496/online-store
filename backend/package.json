@@ -5,8 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "dev": "nodemon src/app.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -14,7 +13,7 @@
     "express": "^4.18.2",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.6.5",
-    "puppeteer": "^21.6.1",
+    "pdfkit": "^0.15.0",
     "socket.io": "^4.6.2"
   },
   "devDependencies": {
