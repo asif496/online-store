@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Product — Online Store</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">🛒 <span>Online Store</span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a></li>
+        <li class="nav-item"><a class="nav-link active" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link position-relative" href="cart.html">
+            <i class="bi bi-cart3 fs-5"></i>
+            <span id="cart-badge" style="display:none;position:absolute;top:-4px;right:-8px">0</span>
+          </a>
+        </li>
+        <li class="nav-item ms-2"><button id="dark-toggle" title="Toggle theme">🌙</button></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-9 col-xl-8">
+
+        <!-- Header -->
+        <div class="mb-4">
+          <h1 class="section-title">Add New <span>Product</span></h1>
+          <div class="section-divider"></div>
+          <p class="text-muted" style="font-size:.88rem">
+            Fill in the product details and upload up to 10 photos. The first image becomes the storefront thumbnail.
+          </p>
+        </div>
+
+        <!-- Success Banner -->
+        <div class="success-banner mb-4" id="success-banner">
+          <div style="font-size:2.5rem;margin-bottom:.5rem">🎉</div>
+          <h4>Product Added Successfully!</h4>
+          <p style="font-size:.9rem;opacity:.9;margin-bottom:1rem" id="success-text"></p>
+          <div class="d-flex gap-2 justify-content-center flex-wrap">
+            <a id="view-product-link" href="#" class="btn btn-sm"
+               style="background:rgba(255,255,255,.25);color:#fff;border:1px solid rgba(255,255,255,.4)">
+              <i class="bi bi-eye me-1"></i>View Product
+            </a>
+            <button id="add-another-btn" class="btn btn-sm"
+               style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)">
+              <i class="bi bi-plus-circle me-1"></i>Add Another
+            </button>
+            <a href="index.html" class="btn btn-sm"
+               style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3)">
+              <i class="bi bi-shop me-1"></i>Go to Store
+            </a>
+          </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="add-product-card" id="product-form-card">
+
+          <!-- ── Section 1: Basic Info ── -->
+          <div class="mb-4">
+            <h5 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:1.2rem;
+                       padding-bottom:.6rem;border-bottom:1px solid var(--border)">
+              <i class="bi bi-tag text-gold me-2"></i>Basic Information
+            </h5>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="field-label" for="f-name">Product Name *</label>
+                <input type="text" class="form-control" id="f-name"
+                  placeholder="e.g. Jamdani Saree (Dhaka)" maxlength="120">
+              </div>
+              <div class="col-12">
+                <label class="field-label" for="f-desc">Description</label>
+                <textarea class="form-control" id="f-desc" rows="3"
+                  placeholder="Describe the product — material, size, usage, origin…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Section 2: Category ── -->
+          <div class="mb-4">
+            <h5 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:1.2rem;
+                       padding-bottom:.6rem;border-bottom:1px solid var(--border)">
+              <i class="bi bi-grid text-gold me-2"></i>Category
+            </h5>
+            <input type="hidden" id="f-category">
+            <div class="category-pills" id="cat-pills">
+              <button type="button" class="cat-pill" data-cat="Apparel">👘 Apparel</button>
+              <button type="button" class="cat-pill" data-cat="Handicrafts">🧵 Handicrafts</button>
+              <button type="button" class="cat-pill" data-cat="Grocery">🥗 Grocery</button>
+              <button type="button" class="cat-pill" data-cat="Sweets">🍮 Sweets</button>
+              <button type="button" class="cat-pill" data-cat="Seafood">🐟 Seafood</button>
+              <button type="button" class="cat-pill" data-cat="Spices">🌶️ Spices</button>
+              <button type="button" class="cat-pill" data-cat="Snacks">🥙 Snacks</button>
+              <button type="button" class="cat-pill" data-cat="Home">🏺 Home</button>
+            </div>
+            <!-- Custom category input -->
+            <div class="mt-2 d-flex gap-2 align-items-center" style="max-width:280px">
+              <input type="text" class="form-control form-control-sm" id="custom-cat-input"
+                     placeholder="Or type a custom category…" maxlength="60">
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="custom-cat-btn">Add</button>
+            </div>
+            <div class="field-hint">Click a category above or type a custom one</div>
+          </div>
+
+          <!-- ── Section 3: Pricing & Stock ── -->
+          <div class="mb-4">
+            <h5 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:1.2rem;
+                       padding-bottom:.6rem;border-bottom:1px solid var(--border)">
+              <i class="bi bi-currency-exchange text-gold me-2"></i>Pricing &amp; Stock
+            </h5>
+            <div class="row g-3">
+              <div class="col-sm-4">
+                <label class="field-label" for="f-price">Price (৳) *</label>
+                <div class="input-group">
+                  <span class="input-group-text" style="background:var(--bg3);border-color:var(--border);color:var(--text-muted);font-size:.85rem">৳</span>
+                  <input type="number" class="form-control" id="f-price"
+                    placeholder="0.00" min="0.01" step="0.01">
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <label class="field-label" for="f-taxrate">Tax Rate *</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" id="f-taxrate"
+                    placeholder="0.05" min="0" max="1" step="0.01" value="0.05">
+                  <span class="input-group-text" id="tax-pct-display"
+                    style="background:var(--bg3);border-color:var(--border);color:var(--gold);font-weight:600;min-width:48px">5%</span>
+                </div>
+                <div class="field-hint">Enter as decimal: 0.05 = 5%</div>
+              </div>
+              <div class="col-sm-4">
+                <label class="field-label" for="f-stock">Stock Qty *</label>
+                <input type="number" class="form-control" id="f-stock"
+                  placeholder="0" min="0" step="1" value="0">
+              </div>
+            </div>
+
+            <!-- Live price preview -->
+            <div class="mt-3 p-3 rounded-3" style="background:var(--bg3);font-size:.85rem" id="price-preview"
+                 style="display:none">
+              <span class="text-muted me-2">Price incl. tax:</span>
+              <strong class="text-gold fs-6" id="price-incl-tax">—</strong>
+            </div>
+          </div>
+
+          <!-- ── Section 4: Photos ── -->
+          <div class="mb-4">
+            <h5 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:1.2rem;
+                       padding-bottom:.6rem;border-bottom:1px solid var(--border)">
+              <i class="bi bi-images text-gold me-2"></i>Product Photos
+              <span style="font-size:.75rem;font-weight:400;color:var(--text-muted);font-family:'DM Sans',sans-serif;margin-left:.5rem">
+                (up to 10 · jpg/png/webp · max 5 MB each)
+              </span>
+            </h5>
+
+            <!-- Drop zone -->
+            <div class="upload-zone" id="upload-zone">
+              <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp"
+                     multiple>
+              <div class="upload-icon">📸</div>
+              <p><strong>Click to browse</strong> or drag &amp; drop images here</p>
+              <p style="margin-top:4px;font-size:.78rem">JPG, PNG or WebP · Max 5 MB each · Up to 10 files</p>
+            </div>
+
+            <!-- Upload progress bar -->
+            <div class="progress-upload" id="upload-progress" style="display:none">
+              <div class="progress-upload-bar" id="upload-progress-bar"></div>
+            </div>
+
+            <!-- Preview grid -->
+            <div class="preview-grid" id="preview-grid"></div>
+            <div class="field-hint mt-1" id="photo-count-hint"></div>
+          </div>
+
+          <!-- ── Validation errors ── -->
+          <div class="alert alert-danger d-none py-2" id="form-errors" style="font-size:.85rem"></div>
+
+          <!-- ── Submit ── -->
+          <div class="d-flex gap-3 align-items-center flex-wrap pt-2" style="border-top:1px solid var(--border)">
+            <button type="button" class="btn btn-gold px-5 py-2" id="submit-btn" style="font-size:.95rem">
+              <i class="bi bi-plus-circle me-2"></i>Add Product
+            </button>
+            <button type="button" class="btn btn-outline-secondary" id="reset-form-btn">
+              <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+            </button>
+            <span class="text-muted ms-auto" style="font-size:.8rem">* Required fields</span>
+          </div>
+
+        </div><!-- /form card -->
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="back-to-top" title="Back to top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+<footer class="footer-enhanced">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="footer-brand" href="index.html">🛒 Online Store</a>
+        <p class="footer-tagline mt-1">Authentic Bangladeshi products — add new items quickly and easily.</p>
+        <div class="footer-social">
+          <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" title="GitHub"><i class="bi bi-github"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Navigate</div>
+        <a class="footer-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a>
+        <a class="footer-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a>
+        <a class="footer-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a>
+        <a class="footer-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a>
+      </div>
+      <div class="col-6 col-lg-6">
+        <div class="footer-heading">Add Product Tips</div>
+        <p style="font-size:.82rem;color:var(--text-soft);line-height:1.6">Upload up to 10 product photos. The first image becomes the storefront thumbnail. Supported formats: JPG, PNG, WebP (max 5 MB each).</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Online Store &middot; Bangladesh &middot; Assignment Project</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.socket.io/4.6.2/socket.io.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/realtime.js"></script>
+<script src="js/pages/add-product.js"></script>
+</body>
+</html>

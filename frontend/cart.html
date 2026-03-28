@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart — Online Store</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">🛒 <span>Online Store</span></a>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <a class="nav-link" href="index.html" style="color:var(--text-muted);font-size:.875rem;font-weight:500;padding:.5rem 1rem">
+        <i class="bi bi-arrow-left me-1"></i>Continue Shopping
+      </a>
+      <button id="dark-toggle" title="Toggle theme">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="container">
+
+    <div class="mb-4">
+      <h1 class="section-title">Your Cart <span id="cart-count-header" class="text-muted" style="font-size:1rem;font-weight:400"></span></h1>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="row g-4" id="cart-layout">
+      <!-- Left: cart items -->
+      <div class="col-lg-8" id="cart-items-col">
+        <div id="cart-items-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Right: order summary -->
+      <div class="col-lg-4">
+        <div class="order-summary">
+          <h5 style="font-family:'Playfair Display',serif;margin-bottom:1.2rem">Order Summary</h5>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">৳ 0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax</span>
+            <span id="summary-tax">৳ 0.00</span>
+          </div>
+          <div class="summary-row grand">
+            <span>Total</span>
+            <span id="summary-total">৳ 0.00</span>
+          </div>
+          <button class="btn btn-gold w-100 mt-3 py-2" id="checkout-btn" style="font-size:.95rem" disabled>
+            <i class="bi bi-bag-check me-2"></i>Proceed to Checkout
+          </button>
+          <button class="btn btn-outline-secondary w-100 mt-2 btn-sm" id="clear-cart-btn">
+            <i class="bi bi-trash me-1"></i>Clear Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="modal fade" id="checkoutModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="font-family:'Playfair Display',serif">
+          <i class="bi bi-bag-check text-gold me-2"></i>Complete Order
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:.875rem">Your Name *</label>
+          <input type="text" class="form-control" id="customer-name" placeholder="Enter your full name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:.875rem">Order Note (optional)</label>
+          <textarea class="form-control" id="order-note" rows="2" placeholder="Any special instructions?"></textarea>
+        </div>
+        <!-- Order preview -->
+        <div class="chart-card p-3 mt-2" style="font-size:.85rem">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Subtotal</span>
+            <span id="modal-subtotal"></span>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-muted">Tax</span>
+            <span id="modal-tax"></span>
+          </div>
+          <div class="d-flex justify-content-between fw-bold" style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px">
+            <span>Total</span>
+            <span class="text-gold" id="modal-total"></span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-gold" id="confirm-order-btn">
+          <i class="bi bi-check2-circle me-1"></i>Place Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-body py-4">
+        <div style="font-size:4rem">🎉</div>
+        <h4 style="font-family:'Playfair Display',serif;color:var(--gold);margin-top:.5rem">Order Placed!</h4>
+        <p class="text-muted" style="font-size:.9rem" id="success-message">Your order has been placed successfully.</p>
+        <div class="d-flex gap-2 justify-content-center mt-3">
+          <a href="reports.html" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-receipt me-1"></i>View Invoice
+          </a>
+          <a href="index.html" class="btn btn-gold btn-sm">
+            <i class="bi bi-shop me-1"></i>Continue Shopping
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="back-to-top" title="Back to top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+<footer class="footer-enhanced">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="footer-brand" href="index.html">🛒 Online Store</a>
+        <p class="footer-tagline mt-1">Authentic Bangladeshi products — handpicked with care.</p>
+        <div class="footer-social">
+          <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" title="GitHub"><i class="bi bi-github"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Navigate</div>
+        <a class="footer-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a>
+        <a class="footer-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a>
+        <a class="footer-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a>
+        <a class="footer-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a>
+      </div>
+      <div class="col-6 col-lg-6">
+        <div class="footer-heading">Your Cart</div>
+        <p style="font-size:.82rem;color:var(--text-soft);line-height:1.6">Review your items, adjust quantities, and proceed to checkout. Orders update inventory in real-time.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Online Store &middot; Bangladesh &middot; Assignment Project</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.socket.io/4.6.2/socket.io.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/realtime.js"></script>
+<script src="js/pages/cart-page.js"></script>
+</body>
+</html>

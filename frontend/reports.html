@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports — Online Store</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">🛒 <span>Online Store</span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link position-relative" href="cart.html">
+            <i class="bi bi-cart3 fs-5"></i>
+            <span id="cart-badge" style="display:none;position:absolute;top:-4px;right:-8px">0</span>
+          </a>
+        </li>
+        <li class="nav-item ms-2"><button id="dark-toggle" title="Toggle theme">🌙</button></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="container">
+
+    <div class="mb-4">
+      <h1 class="section-title">Reports &amp; <span>Invoices</span></h1>
+      <div class="section-divider"></div>
+      <p class="text-muted" style="font-size:.88rem">Generate PDF reports and download order invoices.</p>
+    </div>
+
+    <!-- Report Buttons -->
+    <div class="row g-3 mb-5">
+      <div class="col-md-4">
+        <a href="/api/reports/products.pdf" target="_blank" class="report-btn-card" id="product-report-btn">
+          <div class="icon">📋</div>
+          <h5>Product Report</h5>
+          <p>Full product listing with prices, ratings, and stock summary.</p>
+          <span class="btn btn-gold btn-sm mt-2">
+            <i class="bi bi-download me-1"></i>Download PDF
+          </span>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a href="/api/reports/stock.pdf" target="_blank" class="report-btn-card" id="stock-report-btn">
+          <div class="icon">📦</div>
+          <h5>Stock Report</h5>
+          <p>Inventory levels with low-stock alerts and unit totals.</p>
+          <span class="btn btn-gold btn-sm mt-2">
+            <i class="bi bi-download me-1"></i>Download PDF
+          </span>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <div class="report-btn-card" style="cursor:default" onclick="document.getElementById('orders-section').scrollIntoView({behavior:'smooth'})">
+          <div class="icon">🧾</div>
+          <h5>Order Invoices</h5>
+          <p>Download individual invoices for all placed orders.</p>
+          <span class="btn btn-outline-gold btn-sm mt-2">
+            <i class="bi bi-arrow-down me-1"></i>View Orders Below
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div id="orders-section">
+      <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+        <h2 class="section-title mb-0">Recent <span>Orders</span></h2>
+        <button class="btn btn-outline-danger btn-sm" id="reset-demo-btn">
+          <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Demo Data
+        </button>
+      </div>
+      <div class="section-divider"></div>
+
+      <div class="chart-card p-0" style="overflow:hidden">
+        <div class="table-responsive">
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th style="text-align:right">Subtotal</th>
+                <th style="text-align:right">Tax</th>
+                <th style="text-align:right">Total</th>
+                <th>Date</th>
+                <th style="text-align:center">Invoice</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table">
+              <tr><td colspan="8" class="text-center text-muted py-4">
+                <div class="spinner-border spinner-border-sm text-warning me-2"></div>
+                Loading orders…
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="no-orders" class="empty-state" style="display:none">
+        <div class="icon">🛒</div>
+        <p>No orders yet. Place an order from the store first!</p>
+        <a href="index.html" class="btn btn-gold btn-sm mt-2">Go to Store</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button id="back-to-top" title="Back to top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+<footer class="footer-enhanced">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="footer-brand" href="index.html">🛒 Online Store</a>
+        <p class="footer-tagline mt-1">Authentic Bangladeshi products — reports and invoices at your fingertips.</p>
+        <div class="footer-social">
+          <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" title="GitHub"><i class="bi bi-github"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Navigate</div>
+        <a class="footer-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a>
+        <a class="footer-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a>
+        <a class="footer-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a>
+        <a class="footer-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a>
+      </div>
+      <div class="col-6 col-lg-6">
+        <div class="footer-heading">Reports</div>
+        <p style="font-size:.82rem;color:var(--text-soft);line-height:1.6">Generate PDF product and stock reports, or download individual order invoices.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Online Store &middot; Bangladesh &middot; Assignment Project</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.socket.io/4.6.2/socket.io.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/realtime.js"></script>
+<script src="js/pages/reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Store — Bangladesh</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">🛒 <span>Online Store</span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link active" href="index.html"><i class="bi bi-shop me-1"></i>Store</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link position-relative" href="cart.html">
+            <i class="bi bi-cart3 fs-5"></i>
+            <span id="cart-badge" style="display:none;position:absolute;top:-4px;right:-8px">0</span>
+          </a>
+        </li>
+        <li class="nav-item ms-2"><button id="dark-toggle" title="Toggle theme">🌙</button></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <p class="mb-2 fade-in-up" style="color:var(--gold-lt);font-size:.85rem;font-weight:600;letter-spacing:2px;text-transform:uppercase">
+          🇧🇩 Authentic Bangladeshi Products
+        </p>
+        <h1 class="hero-title fade-in-up fade-in-up-delay-1">
+          Discover the <span>Finest</span><br>Local Crafts & Foods
+        </h1>
+        <p class="hero-subtitle mt-3 mb-4 fade-in-up fade-in-up-delay-2">
+          Handpicked jamdani sarees, artisan crafts, fresh groceries, and traditional sweets—all in one store.
+        </p>
+        <a href="#products" class="btn btn-gold px-4 py-2 fade-in-up fade-in-up-delay-3">
+          <i class="bi bi-arrow-down me-2"></i>Browse Products
+        </a>
+      </div>
+      <div class="col-lg-5 d-none d-lg-flex justify-content-end">
+        <div class="hero-float-emoji" style="font-size:7rem;opacity:.45;filter:drop-shadow(0 0 40px rgba(200,149,42,.6))">🛍️</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS SECTION -->
+<section id="products" class="page-wrapper" style="padding-top:2rem">
+  <div class="container">
+
+    <!-- Search + Filters -->
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+      <div class="search-box flex-grow-1 flex-lg-grow-0">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" id="search-input" placeholder="Search products…" autocomplete="off">
+      </div>
+      <div class="d-flex flex-wrap gap-2" id="category-filters">
+        <button class="filter-chip active" data-cat="all">All</button>
+      </div>
+      <div class="ms-auto text-muted" style="font-size:.82rem" id="result-count"></div>
+    </div>
+    <!-- Sort + Price range -->
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-sort-down-alt text-muted" style="font-size:15px"></i>
+        <select class="sort-select" id="sort-select">
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="rating-desc">Top Rated</option>
+          <option value="name-asc">Name: A → Z</option>
+          <option value="name-desc">Name: Z → A</option>
+        </select>
+      </div>
+      <div class="price-range-row">
+        <span class="pr-label"><i class="bi bi-funnel me-1"></i>৳</span>
+        <input type="number" class="price-range-input" id="price-min" placeholder="Min" min="0">
+        <span class="price-range-sep">—</span>
+        <input type="number" class="price-range-input" id="price-max" placeholder="Max" min="0">
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="row g-3 product-grid" id="product-grid">
+      <!-- Skeleton placeholders -->
+    </div>
+
+  </div>
+</section>
+
+<button id="back-to-top" title="Back to top" aria-label="Back to top">
+  <i class="bi bi-arrow-up"></i>
+</button>
+
+<footer class="footer-enhanced">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="footer-brand" href="index.html">🛒 Online Store</a>
+        <p class="footer-tagline mt-1">Authentic Bangladeshi products — handpicked crafts, foods & fashion, delivered with care.</p>
+        <div class="footer-social">
+          <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" title="GitHub"><i class="bi bi-github"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Navigate</div>
+        <a class="footer-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a>
+        <a class="footer-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a>
+        <a class="footer-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a>
+        <a class="footer-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Categories</div>
+        <a class="footer-link" href="index.html">👘 Apparel</a>
+        <a class="footer-link" href="index.html">🧵 Handicrafts</a>
+        <a class="footer-link" href="index.html">🥗 Grocery</a>
+        <a class="footer-link" href="index.html">🍮 Sweets</a>
+      </div>
+      <div class="col-lg-4">
+        <div class="footer-heading">About This Project</div>
+        <p style="font-size:.82rem;color:var(--text-soft);line-height:1.6">
+          A full-stack inventory management system built with Node.js, MySQL, Socket.IO and Bootstrap 5. Features real-time stock updates, PDF reports, analytics dashboard and image uploads.
+        </p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footer-year"></span> Online Store · Bangladesh · Assignment Project</span>
+      <span class="live-dot" id="realtime-indicator" style="display:none">
+        <i class="bi bi-circle-fill" style="font-size:.5rem;animation:pulse 2s infinite;color:var(--gold)"></i> Live Updates Active
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.socket.io/4.6.2/socket.io.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/realtime.js"></script>
+<script src="js/pages/index.js"></script>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+</style>
+</body>
+</html>

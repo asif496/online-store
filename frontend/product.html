@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — Online Store</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">🛒 <span>Online Store</span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link position-relative" href="cart.html">
+            <i class="bi bi-cart3 fs-5"></i>
+            <span id="cart-badge" style="display:none;position:absolute;top:-4px;right:-8px">0</span>
+          </a>
+        </li>
+        <li class="nav-item ms-2"><button id="dark-toggle" title="Toggle theme">🌙</button></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb" style="font-size:.82rem">
+        <li class="breadcrumb-item"><a href="index.html" class="text-gold text-decoration-none">Store</a></li>
+        <li class="breadcrumb-item active text-muted" id="breadcrumb-name">Loading…</li>
+      </ol>
+    </nav>
+
+    <!-- Product Layout -->
+    <div class="row g-4" id="product-detail-container">
+      <!-- Loaded by JS -->
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-warning" role="status"></div>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="divider"></div>
+    <div class="row g-4">
+      <!-- Rating breakdown -->
+      <div class="col-md-4">
+        <div class="section-title">Reviews</div>
+        <div class="section-divider"></div>
+        <div id="rating-breakdown"><!-- loaded by JS --></div>
+      </div>
+      <!-- Review list -->
+      <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0" style="font-family:'Playfair Display',serif;font-size:1rem">Customer Reviews</h5>
+          <button class="btn btn-gold btn-sm" id="write-review-btn">
+            <i class="bi bi-pencil me-1"></i>Write Review
+          </button>
+        </div>
+        <div id="review-list"><!-- loaded by JS --></div>
+
+        <!-- Add Review Form (hidden by default) -->
+        <div id="review-form-card" class="chart-card mt-3" style="display:none">
+          <h6 style="font-family:'Playfair Display',serif;margin-bottom:1rem">Your Review</h6>
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.85rem;font-weight:500">Rating *</label>
+            <div id="star-input" class="d-flex gap-1"></div>
+            <input type="hidden" id="rating-value" value="0">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.85rem;font-weight:500">Your Name *</label>
+            <input type="text" class="form-control form-control-sm" id="reviewer-name" placeholder="Enter your name">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-size:.85rem;font-weight:500">Comment</label>
+            <textarea class="form-control form-control-sm" id="review-comment" rows="3" placeholder="Share your experience…"></textarea>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-gold btn-sm" id="submit-review-btn">
+              <i class="bi bi-send me-1"></i>Submit Review
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" id="cancel-review-btn">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button id="back-to-top" title="Back to top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+<footer class="footer-enhanced">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="footer-brand" href="index.html">🛒 Online Store</a>
+        <p class="footer-tagline mt-1">Authentic Bangladeshi products — handpicked crafts, foods & fashion.</p>
+        <div class="footer-social">
+          <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" title="GitHub"><i class="bi bi-github"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Navigate</div>
+        <a class="footer-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a>
+        <a class="footer-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a>
+        <a class="footer-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a>
+        <a class="footer-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Categories</div>
+        <a class="footer-link" href="index.html">👘 Apparel</a>
+        <a class="footer-link" href="index.html">🧵 Handicrafts</a>
+        <a class="footer-link" href="index.html">🥗 Grocery</a>
+        <a class="footer-link" href="index.html">🍮 Sweets</a>
+      </div>
+      <div class="col-lg-4">
+        <div class="footer-heading">Project</div>
+        <p style="font-size:.82rem;color:var(--text-soft);line-height:1.6">Full-stack inventory system with Node.js, MySQL, Socket.IO and Bootstrap 5.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Online Store &middot; Bangladesh &middot; Assignment Project</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Hidden product id holder -->
+<span id="product-id-holder" data-id=""></span>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.socket.io/4.6.2/socket.io.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/realtime.js"></script>
+<script src="js/pages/product.js"></script>
+</body>
+</html>

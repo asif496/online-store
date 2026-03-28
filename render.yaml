@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: online-store-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DB_HOST
+        sync: false        # fill in Render dashboard
+      - key: DB_PORT
+        value: 3306
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_NAME
+        value: online_store
+      - key: FRONTEND_ORIGIN
+        sync: false        # paste your Vercel URL here
+      - key: BACKEND_URL
+        sync: false        # paste your Render URL here

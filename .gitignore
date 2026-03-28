@@ -1,0 +1,23 @@
+# Dependencies — never commit these
+node_modules/
+
+# Environment secrets — NEVER commit real .env files
+backend/.env
+.env
+
+# Uploaded product images — too large for git, managed separately
+backend/public/uploads/products/*
+!backend/public/uploads/products/.gitkeep
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Online Store</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">🛒 <span>Online Store</span></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a></li>
+        <li class="nav-item"><a class="nav-link active" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link position-relative" href="cart.html">
+            <i class="bi bi-cart3 fs-5"></i>
+            <span id="cart-badge" style="display:none;position:absolute;top:-4px;right:-8px">0</span>
+          </a>
+        </li>
+        <li class="nav-item ms-2"><button id="dark-toggle" title="Toggle theme">🌙</button></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="container">
+
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div>
+        <h1 class="section-title">Analytics <span>Dashboard</span></h1>
+        <div class="section-divider"></div>
+      </div>
+      <button class="btn btn-outline-secondary btn-sm" id="refresh-btn">
+        <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+      </button>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="row g-3 mb-4" id="kpi-row">
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon">📦</div>
+          <div class="kpi-value" id="kpi-products">—</div>
+          <div class="kpi-label">Products</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon">🛒</div>
+          <div class="kpi-value" id="kpi-orders">—</div>
+          <div class="kpi-label">Orders</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-value" id="kpi-revenue">—</div>
+          <div class="kpi-label">Revenue (৳)</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon">⭐</div>
+          <div class="kpi-value" id="kpi-reviews">—</div>
+          <div class="kpi-label">Reviews</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon">⭐</div>
+          <div class="kpi-value" id="kpi-avg-rating">—</div>
+          <div class="kpi-label">Avg Rating</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="kpi-card">
+          <div class="kpi-icon">⚠️</div>
+          <div class="kpi-value text-danger" id="kpi-low-stock">—</div>
+          <div class="kpi-label">Low Stock</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue Trend + Charts Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="trend-card">
+          <div class="chart-title"><i class="bi bi-graph-up-arrow me-2 text-gold"></i>7-Day Revenue Trend</div>
+          <canvas id="trendChart" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-5">
+        <div class="chart-card h-100">
+          <div class="chart-title"><i class="bi bi-bar-chart me-2 text-gold"></i>Rating Distribution</div>
+          <canvas id="ratingChart" height="260"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="chart-card h-100">
+          <div class="chart-title"><i class="bi bi-trophy me-2 text-gold"></i>Top-Rated Products</div>
+          <canvas id="topRatedChart" height="260"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Revenue + Low Stock Table -->
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="chart-card h-100">
+          <div class="chart-title"><i class="bi bi-pie-chart me-2 text-gold"></i>Revenue by Category</div>
+          <canvas id="categoryChart" height="280"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="chart-card h-100">
+          <div class="chart-title"><i class="bi bi-exclamation-triangle me-2 text-gold"></i>Low Stock Alert (≤ 10 units)</div>
+          <div class="table-responsive" style="max-height:300px;overflow-y:auto">
+            <table class="styled-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th style="text-align:right">Stock</th>
+                  <th style="text-align:center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="low-stock-table">
+                <tr><td colspan="4" class="text-center text-muted py-3">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button id="back-to-top" title="Back to top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+<footer class="footer-enhanced">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="footer-brand" href="index.html">🛒 Online Store</a>
+        <p class="footer-tagline mt-1">Authentic Bangladeshi products — analytics and inventory at a glance.</p>
+        <div class="footer-social">
+          <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" title="GitHub"><i class="bi bi-github"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="footer-heading">Navigate</div>
+        <a class="footer-link" href="index.html"><i class="bi bi-shop me-1"></i>Store</a>
+        <a class="footer-link" href="dashboard.html"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a>
+        <a class="footer-link" href="reports.html"><i class="bi bi-file-earmark-pdf me-1"></i>Reports</a>
+        <a class="footer-link" href="add-product.html"><i class="bi bi-plus-circle me-1"></i>Add Product</a>
+      </div>
+      <div class="col-lg-6">
+        <div class="footer-heading">About</div>
+        <p style="font-size:.82rem;color:var(--text-soft);line-height:1.6">Full-stack inventory system built with Node.js, MySQL, Socket.IO and Bootstrap 5. Features real-time stock updates, PDF reports and live analytics.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Online Store &middot; Bangladesh &middot; Assignment Project</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.socket.io/4.6.2/socket.io.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/realtime.js"></script>
+<script src="js/pages/dashboard.js"></script>
+</body>
+</html>
