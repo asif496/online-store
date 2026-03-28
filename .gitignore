@@ -5,10 +5,6 @@ node_modules/
 backend/.env
 .env
 
-# Uploaded product images — too large for git, managed separately
-backend/public/uploads/products/*
-!backend/public/uploads/products/.gitkeep
-
 # OS junk
 .DS_Store
 Thumbs.db
