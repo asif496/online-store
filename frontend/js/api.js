@@ -10,7 +10,7 @@
  *
  * ⚠️  Change this ONE line before deploying the frontend to Vercel.
  */
-const API_BASE = 'https://YOUR-BACKEND-NAME.onrender.com';  // ← replace this
+const API_BASE = 'https://online-store-mvnu.onrender.com/';  // ← replace this
 
 const api = {
   async get(path) {
